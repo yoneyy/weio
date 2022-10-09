@@ -1,11 +1,11 @@
 {
   "name": "weio",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Promise based HTTP client for for wechat miniprogram",
-  "main": "lib/weio.cjs.js",
-  "module": "lib/weio.esm.js",
-  "types": "lib/weio.d.ts",
-  "typings": "lib/weio.d.ts",
+  "main": "./index.js",
+  "module": "./lib/weio.esm.mjs",
+  "types": "./lib/weio.d.ts",
+  "typings": "./lib/weio.d.ts",
   "repository": "https://github.com/yoneyy/weio.git",
   "author": {
     "name": "yoneyy",
@@ -15,13 +15,15 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "import": "./lib/weio.cjs.js",
-      "require": "./lib/weio.esm.js"
+      "import": "./lib/weio.esm.mjs",
+      "require": "./index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./lib": "./lib/*"
   },
   "files": [
-    "lib"
+    "lib",
+    "index.js"
   ],
   "keywords": [
     "weio",
