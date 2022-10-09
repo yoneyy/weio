@@ -1,8 +1,8 @@
 {
   "name": "weio",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Promise based HTTP client for for wechat miniprogram",
-  "main": "./lib/weio.umd.js",
+  "main": "./lib/weio.cjs.js",
   "module": "./lib/weio.esm.js",
   "types": "./lib/weio.d.ts",
   "typings": "./lib/weio.d.ts",
@@ -19,7 +19,7 @@
   "exports": {
     ".": {
       "import": "./lib/weio.esm.js",
-      "require": "./lib/weio.umd.js"
+      "require": "./lib/weio.cjs.js"
     },
     "./package.json": "./package.json",
     "./lib": "./lib/*"
