@@ -1,10 +1,10 @@
 {
   "name": "weio",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Promise based HTTP client for for wechat miniprogram",
-  "main": "lib/weio.umd.js",
-  "module": "lib/weio.esm.js",
-  "types": "lib/weio.d.ts",
+  "main": "./lib/weio.umd.js",
+  "module": "./lib/weio.esm.js",
+  "types": "./lib/weio.d.ts",
   "typings": "./lib/weio.d.ts",
   "repository": "https://github.com/yoneyy/weio.git",
   "bugs": {
