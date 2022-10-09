@@ -1,6 +1,6 @@
 {
   "name": "weio",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Promise based HTTP client for for wechat miniprogram",
   "main": "./lib/weio.js",
   "module": "./lib/weio.esm.js",
@@ -40,10 +40,12 @@
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development yarn rollup -c -w",
+    "build:dev": "cross-env NODE_ENV=development yarn rollup -c",
     "build": "cross-env NODE_ENV=production yarn rollup -c",
     "prepublishOnly": "yarn build"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.19.3",
     "@rollup/plugin-commonjs": "^23.0.0",
     "@rollup/plugin-node-resolve": "^14.1.0",
     "cross-env": "^7.0.3",
