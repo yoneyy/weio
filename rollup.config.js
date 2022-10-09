@@ -2,7 +2,7 @@
  * @Author: Yoneyy (y.tianyuan) 
  * @Date: 2022-10-09 14:35:25 
  * @Last Modified by: Yoneyy (y.tianyuan)
- * @Last Modified time: 2022-10-09 16:50:27
+ * @Last Modified time: 2022-10-09 18:38:38
  */
 
 import path from 'path';
@@ -25,23 +25,24 @@ const IS_PRO_ENV = process.env.NODE_ENV === 'production';
 function buildConfig() {
 
   const input = resolve('src/weio.ts');
-  const outESMFile = resolve(`lib/weio.esm.js`);
-  const outCJSFile = resolve(`lib/weio.cjs.js`);
+  const outFile = resolve(`lib/weio.js`);
+  const outESMFile = resolve(`lib/weio.esm.mjs`);
 
   /** @type {import("rollup").RollupOptions} */
   const config = {
     input,
     output: [
       {
-        format: 'esm',
-        file: outESMFile,
+        name: 'weio',
+        format: 'umd',
+        file: outFile,
         exports: 'named'
       },
       {
-        format: 'cjs',
-        file: outCJSFile,
+        format: 'esm',
+        file: outESMFile,
         exports: 'named'
-      },
+      }
     ],
     plugins: [
       cleaner({ targets: 'lib/*' }),
