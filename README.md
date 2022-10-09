@@ -8,7 +8,7 @@ Promise based HTTP client for for wechat miniprogram
   yarn add weio -S --registry=https://registry.npmjs.org/
 
   # npm
-  npm add weio -S --registry=https://registry.npmjs.org/
+  npm i weio -S --registry=https://registry.npmjs.org/
 ```
 
 ## How to use it ?

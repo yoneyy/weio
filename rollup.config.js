@@ -2,7 +2,7 @@
  * @Author: Yoneyy (y.tianyuan) 
  * @Date: 2022-10-09 14:35:25 
  * @Last Modified by: Yoneyy (y.tianyuan)
- * @Last Modified time: 2022-10-09 18:38:38
+ * @Last Modified time: 2022-10-09 20:28:42
  */
 
 import path from 'path';
@@ -19,33 +19,18 @@ const IS_PRO_ENV = process.env.NODE_ENV === 'production';
  * buildConfig
  * generate rollup build config
  * 
+ * @param {{input:string; output: typeof import('rollup').OutputOptions,clean: boolean;}} params
  * @returns 
  * @author yoneyy (y.tianyuan)
  */
-function buildConfig() {
-
-  const input = resolve('src/weio.ts');
-  const outFile = resolve(`lib/weio.js`);
-  const outESMFile = resolve(`lib/weio.esm.mjs`);
+function buildConfig(params) {
 
   /** @type {import("rollup").RollupOptions} */
   const config = {
-    input,
-    output: [
-      {
-        name: 'weio',
-        format: 'umd',
-        file: outFile,
-        exports: 'named'
-      },
-      {
-        format: 'esm',
-        file: outESMFile,
-        exports: 'named'
-      }
-    ],
+    input: params.input,
+    output: params.output,
     plugins: [
-      cleaner({ targets: 'lib/*' }),
+      params.clean && cleaner({ targets: 'lib/*' }),
       nodeResolve({
         mainFields: ['module', 'main'],
         extensions: ['.ts', '.d.ts'],
@@ -53,7 +38,7 @@ function buildConfig() {
       }),
       commonJS(),
       typescript({
-        tsconfig: './tsconfig.json'
+        tsconfig: './tsconfig.json',
       }),
       IS_PRO_ENV && terser(),
     ].filter(Boolean)
@@ -63,5 +48,37 @@ function buildConfig() {
 };
 
 export default [
-  buildConfig()
+  buildConfig({
+    clean: true,
+    input: resolve('src/weio.ts'),
+    output: [
+      {
+        name: 'weio',
+        format: 'cjs',
+        file: resolve(`lib/weio.js`),
+        exports: 'named',
+      },
+      {
+        format: 'esm',
+        file: resolve(`lib/weio.esm.js`),
+        exports: 'named'
+      }
+    ]
+  }),
+  buildConfig({
+    input: resolve('src/utils.ts'),
+    output: [
+      {
+        name: 'weio',
+        format: 'cjs',
+        file: resolve(`lib/utils.js`),
+        exports: 'named'
+      },
+      {
+        format: 'esm',
+        file: resolve(`lib/utils.esm.js`),
+        exports: 'named'
+      },
+    ]
+  })
 ];
