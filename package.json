@@ -1,0 +1,52 @@
+{
+  "name": "weio",
+  "version": "0.1.0",
+  "description": "Promise based HTTP client for for wechat miniprogram",
+  "main": "lib/weio.cjs.js",
+  "module": "lib/weio.esm.js",
+  "types": "lib/weio.d.ts",
+  "typings": "lib/weio.d.ts",
+  "repository": "https://github.com/yoneyy/weio.git",
+  "author": {
+    "name": "yoneyy",
+    "email": "yoneyy@163.com",
+    "url": "https://github.com/yoneyy"
+  },
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./lib/weio.cjs.js",
+      "require": "./lib/weio.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "weio",
+    "weiox",
+    "weioxs",
+    "wxios",
+    "axios",
+    "wx-request",
+    "wechat",
+    "wechat-request",
+    "miniprogram-wxios"
+  ],
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development yarn rollup -c -w",
+    "build": "cross-env NODE_ENV=production yarn rollup -c",
+    "prepublishOnly": "yarn build"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^23.0.0",
+    "@rollup/plugin-node-resolve": "^14.1.0",
+    "cross-env": "^7.0.3",
+    "rollup": "^2.79.1",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "typescript": "^4.8.4"
+  }
+}
