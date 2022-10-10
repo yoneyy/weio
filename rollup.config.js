@@ -2,7 +2,7 @@
  * @Author: Yoneyy (y.tianyuan) 
  * @Date: 2022-10-09 14:35:25 
  * @Last Modified by: Yoneyy (y.tianyuan)
- * @Last Modified time: 2022-10-09 20:28:42
+ * @Last Modified time: 2022-10-10 11:39:13
  */
 
 import path from 'path';
@@ -47,21 +47,22 @@ function buildConfig(params) {
   return config;
 };
 
+const buildBaseConfig = { name: 'weio', exports: 'named' };
+
 export default [
   buildConfig({
     clean: true,
     input: resolve('src/weio.ts'),
     output: [
       {
-        name: 'weio',
         format: 'cjs',
         file: resolve(`lib/weio.js`),
-        exports: 'named',
+        ...buildBaseConfig,
       },
       {
         format: 'esm',
         file: resolve(`lib/weio.esm.js`),
-        exports: 'named'
+        ...buildBaseConfig,
       }
     ]
   }),
@@ -69,15 +70,29 @@ export default [
     input: resolve('src/utils.ts'),
     output: [
       {
-        name: 'weio',
         format: 'cjs',
         file: resolve(`lib/utils.js`),
-        exports: 'named'
+        ...buildBaseConfig,
       },
       {
         format: 'esm',
         file: resolve(`lib/utils.esm.js`),
-        exports: 'named'
+        ...buildBaseConfig,
+      },
+    ]
+  }),
+  buildConfig({
+    input: resolve('src/interceptor.ts'),
+    output: [
+      {
+        format: 'cjs',
+        file: resolve(`lib/interceptor.js`),
+        ...buildBaseConfig,
+      },
+      {
+        format: 'esm',
+        file: resolve(`lib/interceptor.esm.js`),
+        ...buildBaseConfig,
       },
     ]
   })
