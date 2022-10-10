@@ -1,6 +1,6 @@
 {
   "name": "weio",
-  "version": "0.1.7",
+  "version": "0.1.7-beta",
   "description": "Promise based HTTP client for for wechat miniprogram",
   "main": "./lib/weio.js",
   "module": "./lib/weio.esm.js",
