@@ -1,6 +1,17 @@
+/*
+ * @Author: Yoneyy (y.tianyuan) 
+ * @Date: 2022-10-10 11:00:08 
+ * @Last Modified by: Yoneyy (y.tianyuan)
+ * @Last Modified time: 2022-10-10 17:05:36
+ */
+
 import * as utils from './utils';
+import InterceptorManager from './interceptor';
 import {
+  WeioResponse,
   WeioRequestOptions,
+  WeioInterceptorHandles,
+  WeioInterceptorManager,
   WeioResponseSuccessResult,
   WeioInstanceRequestOptions,
   WeioRequestComposeCustomOptions,
@@ -17,8 +28,32 @@ class Weio {
    */
   private readonly baseOptions: WeioInstanceRequestOptions;
 
+  interceptors = {
+    request: new InterceptorManager<WeioRequestComposeCustomOptions>() as WeioInterceptorManager<WeioRequestComposeCustomOptions>,
+    response: new InterceptorManager<WeioResponse>() as WeioInterceptorManager<WeioResponse>,
+  }
+
   constructor(options?: WeioInstanceRequestOptions) {
     this.baseOptions = options ?? {};
+  }
+
+  /**
+   * core request method
+   * 
+   * @param option request option
+   * @returns 
+   * @author yoneyy (y.tianyuan)
+   */
+  private dispatch<R>(option: WeioRequestComposeCustomOptions): Promise<R | void> {
+    if (typeof option?.url !== 'string') return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      wx.request({
+        ...this.baseOptions,
+        ...option,
+        success: res => resolve(res as WeioResponseSuccessResult<R>),
+        fail: err => reject(err),
+      })
+    });
   }
 
   /**
@@ -29,7 +64,7 @@ class Weio {
    * 
    * @author yoneyy (y.tianyuan)
    */
-  public request<T>(option: WeioRequestComposeCustomOptions): Promise<T> {
+  public request<R>(option: WeioRequestComposeCustomOptions): Promise<R | void> {
 
     // compose request url
     option.url = `${this.baseOptions?.baseURL ?? ''}${option?.url}`;
@@ -38,16 +73,61 @@ class Weio {
       option.qs === true
       && utils.typeOf(option.data) === 'object'
       && (option.method === 'POST' || option.method === 'PUT')
-    ) option.url += this.qs(option.data as Record<string, any>);
+    ) {
+      const existQ = /\?/g.test(option.url);
+      const existKV = /(.*?)=(.*?)/g.test(option.url);
+      // 如果url为 https://example.com? 则去掉qs中的 `?`
+      // 如果url为 https://example.com?a=1 则直接将qs的prefix为 `&`
+      option.url += this.qs(option.data as Record<string, any>, !existQ ? '?' : existKV ? '&' : '');
+    };
 
-    return new Promise((resolve, reject) => {
-      wx.request({
-        ...this.baseOptions,
-        ...option,
-        success: res => resolve(res as WeioResponseSuccessResult<T>),
-        fail: err => reject(err),
-      })
+    // const requestInterceptorChain: WeioInterceptorHandles[] = [{
+    //   fulfilled: this.dispatch.bind(this),
+    //   rejected: undefined,
+    // }];
+
+    const requestInterceptorChain: WeioInterceptorHandles[] = [];
+
+    const responseInterceptorChain: WeioInterceptorHandles[] = [];
+
+    (this.interceptors.request as InterceptorManager<WeioRequestComposeCustomOptions>).forEach(requestInterceptor => {
+      requestInterceptorChain.unshift(requestInterceptor)
     });
+
+    (this.interceptors.response as InterceptorManager<WeioResponse>).forEach(responseInterceptor => {
+      responseInterceptorChain.push(responseInterceptor)
+    });
+
+    let promise;
+    let newOption = option;
+
+    // 先走请求
+    while (requestInterceptorChain.length) {
+      const { fulfilled, rejected } = requestInterceptorChain.shift()!;
+      try {
+        newOption = fulfilled(option);
+      } catch (error) {
+        rejected?.(error);
+        break;
+      }
+    }
+
+    if (newOption === undefined || newOption === null) return Promise.resolve();
+
+    // 执行核心请求方法
+    try {
+      promise = this.dispatch.call(this, newOption);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+
+    // 执行响应
+    while (responseInterceptorChain.length) {
+      const { fulfilled, rejected } = responseInterceptorChain.shift()!;
+      promise = promise.then(fulfilled, rejected);
+    }
+
+    return promise as Promise<R>;
   }
 
   /**
@@ -70,10 +150,10 @@ class Weio {
    * 
    * @author yoneyy (y.tianyuan)
    */
-  private weioFactory<T>(method: WeioRequestOptions['method']) {
+  private weioFactory<T = WechatMiniprogram.IAnyObject, R = WeioResponse<T>>(method: WeioRequestOptions['method']) {
     return (option: WeioRequestOptions) => {
       option.method = method;
-      return this.request<T>(option);
+      return this.request<R>(option);
     }
   }
 
@@ -83,8 +163,8 @@ class Weio {
    * @param data 
    * @author yoneyy (y.tianyuan)
    */
-  private qs(data: Record<string, unknown>) {
-    return `?${Object.keys(data).map(key => `${key}=${data[key]}`).join('&')}`;
+  private qs(data: Record<string, unknown>, prefix: string = '') {
+    return `${prefix}${Object.keys(data).map(key => `${key}=${data[key]}`).join('&')}`;
   }
 
   /**
