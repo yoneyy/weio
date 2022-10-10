@@ -27,23 +27,43 @@
 
 After installation, you need to find the build npm option under Tools in the `WeChat Developer Tools` menu bar
 
-<img src="https://yoneyy.gonghuolianmeng.com/2022-10-10-014140.png" alt="Snipaste_2022-10-09_20-39-34" style="zoom:50%;" />
+<div align="center">
+  <img src="https://yoneyy.gonghuolianmeng.com/2022-10-10-091134.png" alt="image-20221010105126334" style="zoom: 33%;" />
+</div>
+
+
 
 ```ts
-  // esm
-  import weio from 'weio';
+// esm
+import weio from 'weio';
 
-  const request = weio.create({
-    baseURL: 'https://example.com'
-  });
+const request = weio.create({
+  baseURL: 'https://example.com'
+});
 
-  const {data: ret} = await request.get(url [,options]);
-  const {data: ret} = await request.head(url [,options]);
-  const {data: ret} = await request.delete(url [,options]);
-  const {data: ret} = await request.options(url [,options]);
+// 请求拦截器
+// request interceptors
+request.interceptors.request.use(request => {
+  return request;
+}, error => {
+  return error;
+});
 
-  const {data: ret} = await request.put(url [,data [,options]]);
-  const {data: ret} = await request.post(url [,data [,options]]);
+// 响应拦截器
+// response interceptors
+request.interceptors.response.use(response => {
+  return request;
+}, error => {
+  return error;
+});
+
+const {data: ret} = await request.get(url [,options]);
+const {data: ret} = await request.head(url [,options]);
+const {data: ret} = await request.delete(url [,options]);
+const {data: ret} = await request.options(url [,options]);
+
+const {data: ret} = await request.put(url [,data [,options]]);
+const {data: ret} = await request.post(url [,data [,options]]);
 ```
 
 ```ts
@@ -52,6 +72,22 @@ const weio = require('weio');
 
 const request = weio.create({
   baseURL: 'https://example.com'
+});
+
+// 请求拦截器
+// request interceptors
+request.interceptors.request.use(request => {
+  return request;
+}, error => {
+  return error;
+});
+
+// 响应拦截器
+// response interceptors
+request.interceptors.response.use(response => {
+  return request;
+}, error => {
+  return error;
 });
 
 const {data: ret} = await request.get(url [,options]);
