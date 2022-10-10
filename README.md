@@ -52,7 +52,7 @@ request.interceptors.request.use(request => {
 // 响应拦截器
 // response interceptors
 request.interceptors.response.use(response => {
-  return request;
+  return response;
 }, error => {
   return error;
 });
@@ -85,7 +85,7 @@ request.interceptors.request.use(request => {
 // 响应拦截器
 // response interceptors
 request.interceptors.response.use(response => {
-  return request;
+  return response;
 }, error => {
   return error;
 });
