@@ -23,12 +23,11 @@
     "strictPropertyInitialization": true,
     "esModuleInterop": true,
     "typeRoots": [
-      "src/typings",
+      "typings",
       "./node_modules/@types"
     ]
   },
   "include": [
-    "./src/**/*",
-    "src/typings"
+    "./src/**/*"
   ]
 }
