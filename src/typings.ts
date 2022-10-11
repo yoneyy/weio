@@ -23,7 +23,7 @@ export type WeioRequestComposeCustomOmitDataAndURLOptions = Omit<Omit<WeioReques
  * 
  * @author yoneyy (y.tianyuan)
  */
-export type WeioResponseSuccessResult<S> = WechatMiniprogram.RequestSuccessCallbackResult<string | Record<string, any> | ArrayBuffer> & S;
+// export type WeioResponseSuccessResult<S> = WechatMiniprogram.RequestSuccessCallbackResult<string | Record<string, any> | ArrayBuffer> & S;
 
 /**
  * instantiate Weio request options;
@@ -52,7 +52,7 @@ export type WeioResponse<T = WeioResponseDefaultData> = {
 /**************************************************************************/
 
 export type WeioRejectedHandle = (err: any) => any;
-export type WeioFulfilledHandle<T = any> = (val: T) => T | Promise<T> | void;
+export type WeioFulfilledHandle<T> = (val: T) => T | Promise<T>;
 
 /**
  * weio interceptor handles

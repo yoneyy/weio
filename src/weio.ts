@@ -12,7 +12,6 @@ import {
   WeioRequestOptions,
   WeioInterceptorHandles,
   WeioInterceptorManager,
-  WeioResponseSuccessResult,
   WeioInstanceRequestOptions,
   WeioRequestComposeCustomOptions,
   WeioRequestOmitDataAndURLOptions,
@@ -44,13 +43,13 @@ class Weio {
    * @returns 
    * @author yoneyy (y.tianyuan)
    */
-  private dispatch<R>(option: WeioRequestComposeCustomOptions): Promise<R | void> {
-    if (typeof option?.url !== 'string') return Promise.resolve();
+  private dispatch<T, R = WeioResponse<T>>(option: WeioRequestComposeCustomOptions): Promise<R> {
+    if (typeof option?.url !== 'string') return Promise.resolve() as Promise<R>;
     return new Promise((resolve, reject) => {
       wx.request({
         ...this.baseOptions,
         ...option,
-        success: res => resolve(res as WeioResponseSuccessResult<R>),
+        success: res => resolve(res as R),
         fail: err => reject(err),
       })
     });
@@ -64,7 +63,7 @@ class Weio {
    * 
    * @author yoneyy (y.tianyuan)
    */
-  public request<R>(option: WeioRequestComposeCustomOptions): Promise<R | void> {
+  public request<R>(option: WeioRequestComposeCustomOptions): Promise<R> {
 
     // compose request url
     option.url = `${this.baseOptions?.baseURL ?? ''}${option?.url}`;
@@ -81,13 +80,10 @@ class Weio {
       option.url += this.qs(option.data as Record<string, any>, !existQ ? '?' : existKV ? '&' : '');
     };
 
-    // const requestInterceptorChain: WeioInterceptorHandles[] = [{
-    //   fulfilled: this.dispatch.bind(this),
-    //   rejected: undefined,
-    // }];
-
+    // request interceptor chain
     const requestInterceptorChain: WeioInterceptorHandles[] = [];
 
+    // response interceptor chain
     const responseInterceptorChain: WeioInterceptorHandles[] = [];
 
     (this.interceptors.request as InterceptorManager<WeioRequestComposeCustomOptions>).forEach(requestInterceptor => {
@@ -112,7 +108,7 @@ class Weio {
       }
     }
 
-    if (newOption === undefined || newOption === null) return Promise.resolve();
+    if (newOption === undefined || newOption === null) return Promise.resolve(option) as Promise<R>;
 
     // 执行核心请求方法
     try {
