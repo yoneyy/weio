@@ -4,7 +4,7 @@
  * 
  * @author yoneyy (y.tianyuan)
  */
-export type WeioRequestOptions = Omit<Omit<WechatMiniprogram.RequestOption<string | Record<string, any> | ArrayBuffer>, 'success'>, 'fail'>;
+export type WeioRequestOptions = Omit<WechatMiniprogram.RequestOption<string | Record<string, any> | ArrayBuffer>, 'fail' | 'success'>;
 
 /**
  * compose request options type
